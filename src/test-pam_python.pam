@@ -1,0 +1,4 @@
+auth	required	/home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/pam_python.so /home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/test.py
+account	required	/home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/pam_python.so /home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/test.py arg1 arg2
+password required	/home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/pam_python.so /home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/test.py
+session	required	/home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/pam_python.so /home/frank/src/pam-python-code-faf96f83a3545ed3cae41f766526aa711fd4a88c/src/test.py
