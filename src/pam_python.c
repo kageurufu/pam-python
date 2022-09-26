@@ -93,6 +93,7 @@ typedef int Py_ssize_t;
 #define	Py23_String_Size	PyString_Size
 #define	Py23_String_Type	PyString_Type
 #define	Py23_TYPE(p)		((p)->ob_type)
+#define Py23_CallObject(a, b) PyEval_CallObject(a, b)
 #else
 #define	Py23_ExceptionBase	PyExc_Exception
 #define	Py23_Int_AsLong		PyLong_AsLong
@@ -102,11 +103,14 @@ typedef int Py_ssize_t;
 #define	Py23_String_Check	PyUnicode_Check
 #define Py23_String_FromString	PyUnicode_FromString
 #define	Py23_String_FromStringAndSize PyUnicode_FromStringAndSize
-#define	Py23_String_GET_SIZE	PyUnicode_GET_SIZE
+#define	Py23_String_GET_SIZE	PyUnicode_GET_LENGTH
 #define	Py23_String_Parse_Char	"U"
-#define	Py23_String_Size	PyUnicode_Size
+#define	Py23_String_Size	PyUnicode_GetLength
 #define	Py23_String_Type	PyUnicode_Type
 #define	Py23_TYPE(p)		Py_TYPE(p)
+#define Py23_CallObject(a, b) PyObject_CallObject(a, b)
+
+#define PyClass_Check(obj) PyObject_IsInstance(obj, (PyObject *)&PyType_Type)
 #endif
 #define	Py23_Stringify(x)	#x
 
@@ -578,7 +582,7 @@ static int syslog_path_traceback(
       "OOOOO", ptype, pvalue, ptraceback, Py_None, pamHandle->syslogFile);
   if (args != 0)
   {
-    py_resultobj = PyEval_CallObject(pamHandle->print_exception, args);
+    py_resultobj = Py23_CallObject(pamHandle->print_exception, args);
     if (py_resultobj != 0)
       SyslogFile_flush(pamHandle->syslogFile);
   }
@@ -869,7 +873,7 @@ static int PamHandle_set_item(
   PamHandleObject*	pamHandle = (PamHandleObject*)self;
   int			pam_result;
   int			result = -1;
-  char*			value;
+  const char*			value;
   char			error_message[64];
 
   if (pyValue == Py_None)
@@ -898,8 +902,7 @@ static int PamHandle_set_item(
   result = check_pam_result(pamHandle, pam_result);
 
 error_exit:
-  if (value != 0)
-    free(value);
+  value = 0;
   return result;
 }
 
@@ -2802,7 +2805,7 @@ static int call_python_handler(
   /*
    * Call the Python handler function.
    */
-  py_resultobj = PyEval_CallObject(handler_function, handler_args);
+  py_resultobj = Py23_CallObject(handler_function, handler_args);
   /*
    * Did it throw an exception?
    */
